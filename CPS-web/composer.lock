@@ -5,7 +5,6 @@
         "This file is @generated automatically"
     ],
     "hash": "7dba234cf377636df04339e7d9a1b84e",
-    "content-hash": "6864f70e997927075b9aeb5dd3c123d9",
     "packages": [
         {
             "name": "videlalvaro/php-amqplib",

@@ -6,4 +6,6 @@ applications:
   name: CPS-web
   host: cps-web
   disk_quota: 1024M
+  services:
+  - CloudAMQP-lm
   buildpack: php_buildpack
