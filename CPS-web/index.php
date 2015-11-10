@@ -2,7 +2,7 @@
 <html>
 <head>
 	<?php require_once "cps-web.php"; ?>
-	<title>PHP Starter Application</title>
+	<title>CPS</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="style.css" />
 </head>
@@ -12,11 +12,8 @@
 			<td style='width: 30%;'><img class = 'newappIcon' src='images/newapp-icon.png'>
 			</td>
 			<td>
-				<h1 id = "message"><?php echo "Hello world!"; ?>
-</h1>
-				<p class='description'></p> Thanks for creating a <span class="blue">PHP Starter Application</span>. Get started by reading our <a
-				href="https://www.ng.bluemix.net/docs/#starters/php/index.html#php">documentation</a>
-				or use the Start Coding guide under your app in your dashboard.
+				<h1 id = "message"><?php echo "CPS-web service"; ?>
+				</h1>				
 			</td>
 		</tr>
 	</table>
