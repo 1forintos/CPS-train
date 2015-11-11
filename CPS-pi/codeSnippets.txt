@@ -1,0 +1,41 @@
+3.3 pwr		1
+NC		semmi
+LED piros	7
+led zöld	11	
+opto1		13	
+opt2		15
+gnd		5
+
+
+sudo pip install RPi.GPIO
+python
+from RPi import GPIO
+from time import time
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(7, GPIO.OUT)
+GPIO.setup(11, GPIO.OUT)
+GPIO.setup(13, GPIO.IN)
+GPIO.setup(15, GPIO.IN)
+
+
+while True:
+...   	GPIO.output(7, not GPIO.input(13))
+...   	GPIO.output(11, not GPIO.input(15))
+...	if (not GPIO.input(13)):
+		t = time()
+	while GPIO.input(13):
+		diff = time() - t
+		//felküldés
+		
+//olvasás LED-re
+
+//amqp://jvfqfkoz:CIYbdAeJKF0XL9MZ9wPg2J72cy-RRTkL@golden-kangaroo.rmq.cloudamqp.com/jvfqfkoz
+
+
+webcam: 
+https://www.raspberrypi.org/documentation/usage/webcams/
+sudo apt-get install fswebcam
+take picture:
+fswebcam image.jpg
+
