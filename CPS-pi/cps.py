@@ -2,8 +2,13 @@ import pika, os, urlparse, logging
 import base64
 import time
 from RPi import GPIO
+import argparse
 
 logging.basicConfig()
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--trainColor", help="The base color of the image that will be sent to the cloud. [red|green]")
+args = parser.parse_args()
 
 PIN_LED_RED = 7
 PIN_LED_GREEN = 11
@@ -17,7 +22,7 @@ def getTrainImage(trainColor):
 	with open("res/" + trainColor + ".jpg", "rb") as image_file:
 	    return base64.b64encode(image_file.read())
 
-def processSpeedResult(ch, method, properties, body):
+def processResult(ch, method, properties, body):
 	if(body == "RED"):
 		GPIO.output(PIN_LED_RED, 1)
 		GPIO.output(PIN_LED_GREEN, 0)
@@ -33,6 +38,14 @@ def check_opto_channels():
 	while(True):
 		log_msg("Channels: " + str(GPIO.input(PIN_OPTO_1)) + " " + str(GPIO.input(PIN_OPTO_2)))
 		time.sleep(0.5)
+
+if(args.trainColor == None):
+	log_msg("Starting cps in speed detection mode...")
+else:
+	if(args.trainColor != "red" and args.trainColor != "green"):
+		log_msg("Train color has to be red or green.")
+		exit()
+	log_msg("Starting cps in color detection mode...")
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
@@ -52,13 +65,8 @@ params.socket_timeout = 5
 connection = pika.BlockingConnection(params) # Connect to CloudAMQP
 channel = connection.channel() # start a channel
 
-image_base64 = getTrainImage("blue")
-
-# send a image
-# channel.basic_publish(exchange='', routing_key='TRAIN_IMAGES', body=image_base64)
-# print " [x] Image sent"
-
 # check_opto_channels()
+
 while(True):
 	send_blue = True
 	if(GPIO.input(PIN_OPTO_1) == 0):
@@ -70,9 +78,13 @@ while(True):
 				time_diff = (time.time() - time_start) / 3600
 				speed_km_p_hr = (DISTANCE / time_diff)
 				log_msg("Speed: " + str(speed_km_p_hr) + " km/h")
+				if(args.trainColor != None):
+					image_base64 = getTrainImage(args.trainColor)
+					channel.basic_publish(exchange='', routing_key='TRAIN_IMAGES', body=image_base64)
 				channel.basic_publish(exchange='', routing_key='TRAIN_SPEED', body=str(speed_km_p_hr))
-				channel.basic_consume(processSpeedResult, queue='LED', no_ack=True)
+				channel.basic_consume(processResult, queue='LED', no_ack=True)
 				channel.start_consuming()
 				go = False
 
+# Close connection to CloudAMQP
 connection.close()
